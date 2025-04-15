@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/auth/LoginPage.tsx';
 import RegisterPage from './components/auth/RegisterPage.tsx';
 import ChatPage from './components/chat/ChatPage.tsx';
+import { UsersPage } from './components/admin/UsersPage.tsx';
+import { UsageStatsPage } from './components/admin/UsageStatsPage.tsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.tsx';
 import { SocketProvider } from './contexts/SocketContext.tsx';
 import { Spinner, Center } from '@chakra-ui/react';
@@ -64,6 +66,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/users" 
+            element={
+              <ProtectedRoute>
+                <UsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/usage" 
+            element={
+              <ProtectedRoute>
+                <UsageStatsPage />
               </ProtectedRoute>
             }
           />

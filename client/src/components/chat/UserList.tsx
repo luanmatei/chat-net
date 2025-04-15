@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { VStack, Box, Text, Heading, Flex, Badge, Tooltip } from "@chakra-ui/react";
 import { useSocket } from "../../contexts/SocketContext";
 
@@ -10,54 +10,21 @@ interface ActiveUser {
   connectionCount: number;
 }
 
-// Interface for our consolidated user display
-interface ConsolidatedUser {
-  nickname: string;
-  connectionCount: number;
-}
-
 export const UserList: React.FC = () => {
   const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
   const { socket } = useSocket();
-
-  // Consolidate users by nickname
-  const consolidatedUsers = useMemo(() => {
-    const userMap = new Map<string, ConsolidatedUser>();
-    
-    activeUsers.forEach(user => {
-      if (!userMap.has(user.nickname)) {
-        userMap.set(user.nickname, {
-          nickname: user.nickname,
-          connectionCount: 1
-        });
-      } else {
-        const existing = userMap.get(user.nickname);
-        if (existing) {
-          existing.connectionCount += 1;
-        }
-      }
-    });
-    
-    return Array.from(userMap.values());
-  }, [activeUsers]);
 
   useEffect(() => {
     if (!socket) return;
 
     // Listen for active users updates
     socket.on("active_users", (users: ActiveUser[]) => {
+      console.log("Received active users:", users);
       setActiveUsers(users);
     });
 
-    const handleConnect = () => {
-      // Optional: Explicitly request user list on connect if needed
-      // socket.emit('request_active_users'); 
-    };
-    socket.on('connect', handleConnect);
-
     return () => {
       socket.off("active_users");
-      socket.off('connect', handleConnect);
     };
   }, [socket]);
 
@@ -70,11 +37,11 @@ export const UserList: React.FC = () => {
       borderColor="gray.200"
       p={4}
     >
-      <Heading size="md" mb={4}>Active Users ({consolidatedUsers.length})</Heading>
+      <Heading size="md" mb={4}>Active Users ({activeUsers.length})</Heading>
       <VStack align="stretch" spacing={2}>
-        {consolidatedUsers.map((user, index) => (
+        {activeUsers.map((user) => (
           <Box
-            key={`${user.nickname}-${index}`}
+            key={user.userId}
             p={3}
             bg="gray.50"
             borderRadius="md"
@@ -86,8 +53,8 @@ export const UserList: React.FC = () => {
               </Text>
               <Tooltip 
                 label={user.connectionCount > 1 
-                  ? `This user is currently logged in from ${user.connectionCount} different devices or browsers` 
-                  : "This user is connected from one device"}
+                  ? `Connected from ${user.connectionCount} different devices or browsers` 
+                  : "Connected from one device"}
                 placement="top"
                 hasArrow
               >
@@ -97,7 +64,7 @@ export const UserList: React.FC = () => {
                   borderRadius="md" 
                   px={2} 
                   py={1}
-                  fontSize="sm"
+                  fontSize="xs"
                   cursor="help"
                 >
                   {user.connectionCount}X

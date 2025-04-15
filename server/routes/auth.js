@@ -150,4 +150,25 @@ router.get('/profile', authenticateToken, (req, res) => {
   }
 });
 
+// Get all users (admin route)
+router.get('/users', authenticateToken, (req, res) => {
+  try {
+    // Return users without passwords
+    const safeUsers = users.map(user => ({
+      id: user.id,
+      nickname: user.nickname,
+      contactNumber: user.contactNumber,
+      createdAt: user.createdAt
+    }));
+    
+    res.status(200).json({
+      count: safeUsers.length,
+      users: safeUsers
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Server error while fetching users' });
+  }
+});
+
 module.exports = router;

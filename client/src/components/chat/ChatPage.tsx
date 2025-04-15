@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Box, Flex, Button, Text, useToast } from "@chakra-ui/react";
+import { Box, Flex, Button, Text, useToast, HStack } from "@chakra-ui/react";
 import MessageInput from './MessageInput';
 import { MessageList } from './MessageList';
 import { UserList } from './UserList';
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useCallback } from "react";
 import { useSocket } from "../../contexts/SocketContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export const ChatPage: React.FC = () => {
   const { user, logout } = useAuth();
@@ -69,9 +69,17 @@ export const ChatPage: React.FC = () => {
       <Flex flex={1} direction="column">
         <Box p={4} bg="white" borderBottom="1px" borderColor="gray.200" display="flex" justifyContent="space-between" alignItems="center">
           <Text fontSize="lg" fontWeight="bold">Welcome, {user?.nickname}</Text>
-          <Button colorScheme="red" size="sm" onClick={handleLogout}>
-            Logout
-          </Button>
+          <HStack spacing={4}>
+            <Button as={Link} to="/usage" colorScheme="green" size="sm">
+              Usage Stats
+            </Button>
+            <Button as={Link} to="/users" colorScheme="blue" size="sm">
+              Ver Usuários
+            </Button>
+            <Button colorScheme="red" size="sm" onClick={handleLogout}>
+              Logout
+            </Button>
+          </HStack>
         </Box>
         <MessageList />
         <Box p={4} bg="white" borderTop="1px" borderColor="gray.200">
