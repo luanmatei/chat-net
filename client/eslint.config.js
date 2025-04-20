@@ -23,6 +23,15 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      // Additional custom rules
+      'no-console': ['warn'],
+      'semi': ['error', 'always'],
+      'quotes': ['error', 'single'],
+      'indent': ['error', 2],
+      'no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
     },
   },
 )
